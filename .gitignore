@@ -1,0 +1,6 @@
+.eggs/
+build/
+dist/
+spacy_babelnet.egg-info/
+__pycache__/
+
