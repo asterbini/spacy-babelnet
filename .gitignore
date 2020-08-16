@@ -1,6 +1,7 @@
+.idea/
 .eggs/
 build/
 dist/
 spacy_babelnet.egg-info/
 __pycache__/
-
+*.egg
