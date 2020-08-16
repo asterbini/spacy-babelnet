@@ -2,8 +2,8 @@
 #### Fit this variable as for your setup ####
 
 ## Directory containing the JDK installation with include/jni.h and include/linux/jni_md.h
-#JNI_DIR:=/opt/anaconda3/envs/MLC
-JNI_DIR:=/usr/lib/jvm/java
+JNI_DIR:=/opt/anaconda3/envs/MLC
+#JNI_DIR:=/usr/lib/jvm/java
 
 #######################################################################
 

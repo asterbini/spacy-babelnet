@@ -2,19 +2,12 @@
 
 A Spacy pipeline component that annotates tokens with their Babelnet Synsets (and Lemmas?).
 
-### Build and install the babelnet module
+### Install
 
-- install the jcc module
-  > anaconda install jcc
-- or else
-  > pip install jcc
-- download and unzip the Babelnet-API archive version 4.0.1 
-  > make get_api
-- register to Babelnet.org and place your API key in the BabelNet-API-4.0.1/config/babelnet.vars.properties file
-- build and install the babelnet python wrapper to the Babelnet API jars
-  > make babelnet
-- Build and install the spacy-babelnet module
-  > make spacy-babelnet
+Install the included babelnet wrapper module
+> easy_install babelnet-4.0.1-py3.7-linux-x86_64.egg
+Install the spacy-babelnet module
+> python setup.py install
 
 ## Copy the config directory containing your key
 The babelnet module must find the config directory in the current directory.
@@ -57,3 +50,19 @@ for token in doc:
 - speed-up the synsets retrieval 
     - convert BN to a simpler database?
     - build a lemma-synset external index?
+
+### Build and install the babelnet module
+This is not currently working, the resulting babelnet module is different from the above one and lacks some methods
+
+- install the jcc module
+  > anaconda install jcc
+- or else
+  > pip install jcc
+- download and unzip the Babelnet-API archive version 4.0.1 
+  > make get_api
+- register to Babelnet.org and place your API key in the BabelNet-API-4.0.1/config/babelnet.vars.properties file
+- build and install the babelnet python wrapper to the Babelnet API jars
+  > make babelnet
+- Build and install the spacy-babelnet module
+  > make spacy-babelnet
+
