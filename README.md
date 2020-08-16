@@ -6,6 +6,7 @@ A Spacy pipeline component that annotates tokens with their Babelnet Synsets (an
 
 Install the included babelnet wrapper module
 > easy_install babelnet-4.0.1-py3.7-linux-x86_64.egg
+
 Install the spacy-babelnet module
 > python setup.py install
 
