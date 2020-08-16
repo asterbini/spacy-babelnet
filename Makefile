@@ -15,18 +15,18 @@ BN_DIR=BabelNet-API-4.0.1
 #######################################################################
 
 # download and unzip the API
-get_api: $(BN_DIR)
-    wget $(BN_API_URL)
-    unzip $(BN_DIR).zip
+get_api:
+	wget $(BN_API_URL)
+	unzip $(BN_DIR).zip
 
 # copy this makefile in the BabelNet-API- and build/install the babelnet module
-babelnet: get_api
-    cp $(MAKEFILE) $(BN_DIR)
-    make -C $(BN_DIR) build_install_api
+babelnet:
+	cp Makefile $(BN_DIR)
+	make -C $(BN_DIR) build_install_api
 
 # build and install the spacy-babelnet module
 spacy-babelnet:
-    python setup.py install
+	python setup.py install
 
 #######################################################################
 

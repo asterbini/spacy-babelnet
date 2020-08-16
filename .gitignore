@@ -5,3 +5,4 @@ dist/
 spacy_babelnet.egg-info/
 __pycache__/
 *.egg
+BabelNet-API-4.0.1/
