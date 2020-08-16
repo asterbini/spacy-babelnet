@@ -30,7 +30,7 @@ Instead than using the Babelnet REST service, you could install it locally
 The wrapper adds the 'babelnet' property to tokens, containing a Babelnet object that can be used to retrieve its synsets or lemmas
 ```
 import spacy
-from spacy-babelnet import BabelnetAnnotator
+from spacy_babelnet import BabelnetAnnotator
 
 nlp = spacy.load('it')
 nlp.add_pipe(BabelnetAnnotator('it'))
