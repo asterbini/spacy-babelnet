@@ -1,26 +1,40 @@
-# Spacy Babelnet
+## Spacy Babelnet
 
-A Spacy pipeline component that annotates tokens with their Babelnet Synsets (and Lemmas?).
+A Spacy pipeline component that annotates tokens with their corresponding Babelnet Synsets (and Lemmas).
+The synsets are searched only in the specified language, but other languages can be retrieved through Babelnet.
+If the token has a POS annotation, the synsets are searched only with that POS.
+Notice that Babelnet uses only the 4 main POS tags: `NAME,ADJ,VERB,ADV`.
 
-### Install
+### Build and install the `babelnet` module
+The `babelnet` module is a python wrapper to the Babelnet API jars
+- install the `jcc` module \
+  ``anaconda install jcc``
+- or else \
+  ``pip install jcc``
+- download and unzip the Babelnet-API archive version 4.0.1 \
+  ``make get_api``
+- NOTICE: `jcc` 3.7 compiles its class wrappers in non-deterministic order sometimes producing a non-working `babelnet` module. To fix this:
+  - change line 696 of file ``.../site-packages/jcc/cpp.py`` from \
+    ``for cls in todo:``  
+    to \
+    ``for cls in sorted(todo, key=lambda c: c.getName()): ``
+- build and install the `babelnet` module \
+  ``make babelnet``
 
-Install the included babelnet wrapper module
-> easy_install babelnet-4.0.1-py3.7-linux-x86_64.egg
+### Build and install the `spacy-babelnet` module
+- ``make spacy-babelnet`` \
+  or else
+- ``python setup.py install``
 
-Install the spacy-babelnet module
-> python setup.py install
+### Copy the config directory containing your key
+The `babelnet` module must find the `config` directory in the current application directory.
 
-## Copy the config directory containing your key
-The babelnet module must find the config directory in the current directory.
-
-## Install locally the BabelNet indices (29G compressed, 50G on disk)
-Instead than using the Babelnet REST service, you could install it locally
+### Local install of the BabelNet indices (29G compressed, 49G on disk)
 - download the Babelnet indices from BabelNet.org
 - unzip them
-- edit the config/babelnet.vars.properties file to indicate the directory position
+- edit the `config/babelnet.vars.properties` file to indicate the directory position
 
-# Usage Example
-
+## Usage Example
 The wrapper adds the 'babelnet' property to tokens, containing a Babelnet object that can be used to retrieve its synsets or lemmas
 ```
 import spacy
@@ -33,6 +47,8 @@ doc = nlp('Mi piace la pizza')
 for token in doc:
     print(token, token._.babelnet.synsets(), token._.babelnet.lemmas(), sep='\n\t')
 ```
+That produces the output
+
     Mi
             [WIKIDATA:EN:E, mu#n#1, WIKI:EN:Jón_Leifs, WIKI:EN:methylisothiazolinone, WIKI:EN:Mi_(kana), WIKI:EN:Province_of_Milan, mi#n#8, Milan#n#1, WIKIDATA:EN:Mi]
             [<BabelLemma: Fa♭>, <BabelLemma: Mi>, <BabelLemma: Fa_bemolle>, <BabelLemma: Μ>, <BabelLemma: Mi>, <BabelLemma: mu>, <BabelLemma: Mu>, <BabelLemma: μ>, <BabelLemma: Jón_Leifs>, <BabelLemma: mi>, <BabelLemma: Methylisothiazolinone>, <BabelLemma: Metilisotiazolinone>, <BabelLemma: MIT>, <BabelLemma: MI>, <BabelLemma: methylisothiazolinone>, <BabelLemma: Mi>, <BabelLemma: み>, <BabelLemma: ミ>, <BabelLemma: Provincia_di_Milano>, <BabelLemma: Città_metropolitana_di_Milano>, <BabelLemma: MI>, <BabelLemma: provincia_di_Milano>, <BabelLemma: mi>, <BabelLemma: Fa♭>, <BabelLemma: mu>, <BabelLemma: Mi>, <BabelLemma: Fa_bemolle>, <BabelLemma: Milano>, <BabelLemma: Mediolanum>, <BabelLemma: MI>, <BabelLemma: Milàn>, <BabelLemma: Occupazione_francese_di_Milano>, <BabelLemma: Milano_Jazzin'_Festival>, <BabelLemma: milano>, <BabelLemma: Mi>]
@@ -48,22 +64,9 @@ for token in doc:
 
 ## TODO
 - add tests
-- speed-up the synsets retrieval 
-    - convert BN to a simpler database?
+- find a better location for the `babelnet` configuration (`~/babelnet_data` ?)
+- map other spacy POS types to Babelnet POS types?
+- filter out tokens with unmapped POS?
+- speed-up synsets retrieval
+    - convert BN to a simpler/faster database?
     - build a lemma-synset external index?
-
-### Build and install the babelnet module
-This is not currently working, the resulting babelnet module is different from the above one and lacks some methods
-
-- install the jcc module
-  > anaconda install jcc
-- or else
-  > pip install jcc
-- download and unzip the Babelnet-API archive version 4.0.1 
-  > make get_api
-- register to Babelnet.org and place your API key in the BabelNet-API-4.0.1/config/babelnet.vars.properties file
-- build and install the babelnet python wrapper to the Babelnet API jars
-  > make babelnet
-- Build and install the spacy-babelnet module
-  > make spacy-babelnet
-
