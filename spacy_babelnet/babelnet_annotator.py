@@ -21,37 +21,37 @@ class BabelnetAnnotator():
 
         return doc
 
-__SPACY_BN_POS_MAPPING = {
-        ADJ   : bn.BabelPOS.ADJECTIVE,
-#        ADP   :
-        ADV   : bn.BabelPOS.ADVERB,
-#        AUX   :
-#        CCONJ :
-#        CONJ  :
-#        DET   :
-#        EOL   :
-#        IDS   :
-#        INTJ  :
-#        NAMES :
-#        NO_TAG:
-        NOUN  : bn.BabelPOS.NOUN,
-#        NUM   :
-#        PART  :
-#        PRON  :
-#        PROPN :
-#        PUNCT :
-#        SCONJ :
-#        SPACE :
-#        SYM   :
-        VERB  : bn.BabelPOS.VERB,
-#        X     :
-        }
-
-def spacy2babelnet_pos(pos):
-    return __SPACY_BN_POS_MAPPING.get(pos)
 
 class Babelnet():
     __bn = bn.BabelNet.getInstance()
+    # FIXME: check if correct
+    __SPACY_BN_POS_MAPPING = {
+            ADJ   : bn.BabelPOS.ADJECTIVE,
+    #       ADP   :
+            ADV   : bn.BabelPOS.ADVERB,
+            AUX   : bn.BabelPOS.VERB,
+    #       CCONJ :
+    #       CONJ  :
+            DET   : bn.BabelPOS.NOUN,
+    #       EOL   :
+    #       IDS   :
+    #       INTJ  :
+    #       NO_TAG:
+            NOUN  : bn.BabelPOS.NOUN,
+            NUM   : bn.BabelPOS.NOUN,
+    #       PART  :
+            PRON  : bn.BabelPOS.NOUN,
+            PROPN : bn.BabelPOS.NOUN,
+    #       PUNCT :
+    #       SCONJ :
+    #       SPACE :
+    #       SYM   :
+            VERB  : bn.BabelPOS.VERB,
+    #       X     :
+            }
+
+    def spacy2babelnet_pos(self, pos):
+        return self.__SPACY_BN_POS_MAPPING.get(pos)
 
     def __init__(self, token: Token, lang: str = 'en'):
         self.__token    = token
@@ -72,15 +72,14 @@ class Babelnet():
             # extend synset coverage using lemmas
             word_variants.append(token.lemma_)
 
+        token_synsets = set()
         for word in word_variants:
-            pos = spacy2babelnet_pos(token.pos)
+            pos = self.spacy2babelnet_pos(token.pos)
             if pos!=None:
-                token_synsets = self.__bn.getSynsets(word, lang, pos)
-            else:
-                token_synsets = self.__bn.getSynsets(word, lang)
-            if token_synsets:
-                return token_synsets
+                token_synsets |= set(self.__bn.getSynsets(word, lang, pos))
+        if token_synsets:
+            return list(token_synsets)
         return []
 
     def __find_lemmas(self):
-        return [lemma for synset in self.__synsets for lemma in synset.getLemmas(self.__bn_lang)]
+        return list({lemma for synset in self.__synsets for lemma in synset.getLemmas(self.__bn_lang)})
