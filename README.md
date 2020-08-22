@@ -8,32 +8,27 @@ Only tokens that map to these 4 types are searched in BabelNet.
 
 ### Build and install the `babelnet` module
 The `babelnet` module is a python wrapper to the Babelnet API jars
-- install the `jcc` module \
-  ``anaconda install jcc``
+- install the `jcc` module (version > 3.7 or from a recent SVN development) \
+  ``anaconda install jcc>3.7``
 - or else \
-  ``pip install jcc``
+  ``pip install jcc>3.7``
 - download and unzip the Babelnet-API archive version 4.0.1 \
   ``make get_api``
-- NOTICE: `jcc` 3.7 compiles its class wrappers in non-deterministic order sometimes producing a non-working `babelnet` module. To fix this:
-  - change line 696 of file ``.../site-packages/jcc/cpp.py`` from \
-    ``for cls in todo:``  
-    to \
-    ``for cls in sorted(todo, key=lambda c: c.getName()): ``
 - build and install the `babelnet` module \
   ``make babelnet``
 
-### Build and install the `spacy-babelnet` module
+### Build and install the `spacy_babelnet` module
 - ``make spacy-babelnet`` \
   or else
 - ``python setup.py install``
 
 ### Copy the config directory containing your key
-The `babelnet` module must find the `config` directory in the current application directory.
+The `babelnet` module must find the `config` directory in the current directory. Copy the `config` directory and edit the `config/babelnet.var.properties` to add your BabelNet API key.
 
-### Local install of the BabelNet indices (29G compressed, 49G on disk)
-- download the Babelnet indices from BabelNet.org
+### Optional: local install of the BabelNet indices (29G compressed, 49G on disk)
+- download the BabelNet indices from BabelNet.org
 - unzip them
-- edit the `config/babelnet.vars.properties` file to indicate the directory position
+- edit the `config/babelnet.vars.properties` file to set the indices directory
 
 ## Usage Example
 The wrapper adds the 'babelnet' property to tokens, containing a Babelnet object that can be used to retrieve its synsets or lemmas
@@ -50,18 +45,21 @@ for token in doc:
 ```
 That produces the output
 
-    Mi
+    mi
         [<BabelSynset: mu#n#1>, <BabelSynset: WIKI:EN:Province_of_Milan>, <BabelSynset: WIKIDATA:EN:E>, <BabelSynset: WIKI:EN:Jón_Leifs>, <BabelSynset: WIKIDATA:EN:Mi>, <BabelSynset: mi#n#8>, <BabelSynset: Milan#n#1>, <BabelSynset: WIKI:EN:methylisothiazolinone>, <BabelSynset: WIKI:EN:Mi_(kana)>]
-        [<BabelLemma: Mi>, <BabelLemma: milano>, <BabelLemma: Mi>, <BabelLemma: mu>, <BabelLemma: Città_metropolitana_di_Milano>, <BabelLemma: μ>, <BabelLemma: mu>, <BabelLemma: MIT>, <BabelLemma: ミ>, <BabelLemma: methylisothiazolinone>, <BabelLemma: Mi>, <BabelLemma: mi>, <BabelLemma: Mu>, <BabelLemma: MI>, <BabelLemma: み>, <BabelLemma: Fa_bemolle>, <BabelLemma: Milàn>, <BabelLemma: Occupazione_francese_di_Milano>, <BabelLemma: MI>, <BabelLemma: Fa_bemolle>, <BabelLemma: MI>, <BabelLemma: Methylisothiazolinone>, <BabelLemma: Mi>, <BabelLemma: Mi>, <BabelLemma: Milano>, <BabelLemma: Provincia_di_Milano>, <BabelLemma: mi>, <BabelLemma: Jón_Leifs>, <BabelLemma: Mediolanum>, <BabelLemma: Fa♭>, <BabelLemma: Fa♭>, <BabelLemma: Milano_Jazzin'_Festival>, <BabelLemma: provincia_di_Milano>, <BabelLemma: Metilisotiazolinone>, <BabelLemma: Μ>]
+        [<BabelLemma: Mi>, <BabelLemma: MIT>, <BabelLemma: mu>, <BabelLemma: Occupazione_francese_di_Milano>, <BabelLemma: Milano_Jazzin'_Festival>, <BabelLemma: Jón_Leifs>, <BabelLemma: Fa♭>, <BabelLemma: Provincia_di_Milano>, <BabelLemma: mi>, <BabelLemma: Mu>, <BabelLemma: μ>, <BabelLemma: MI>, <BabelLemma: Milàn>, <BabelLemma: Mi>, <BabelLemma: Μ>, <BabelLemma: Milano>, <BabelLemma: milano>, <BabelLemma: mi>, <BabelLemma: ミ>, <BabelLemma: methylisothiazolinone>, <BabelLemma: Mi>, <BabelLemma: Mi>, <BabelLemma: Fa♭>, <BabelLemma: Metilisotiazolinone>, <BabelLemma: Mi>, <BabelLemma: Fa_bemolle>, <BabelLemma: Mediolanum>, <BabelLemma: Methylisothiazolinone>, <BabelLemma: Fa_bemolle>, <BabelLemma: Città_metropolitana_di_Milano>, <BabelLemma: MI>, <BabelLemma: MI>, <BabelLemma: み>, <BabelLemma: provincia_di_Milano>, <BabelLemma: mu>]
+
     piace
         [<BabelSynset: like#v#2>, <BabelSynset: like#v#2>, <BabelSynset: gratify#v#1>, <BabelSynset: WIKT:EN:fond>, <BabelSynset: delight#v#1>, <BabelSynset: care#v#3>, <BabelSynset: like#v#3>, <BabelSynset: enjoy#v#3>]
-        [<BabelLemma: dilettare>, <BabelLemma: piacere>, <BabelLemma: piace>, <BabelLemma: piacere>, <BabelLemma: compiacere>, <BabelLemma: accontentare>, <BabelLemma: assecondare>, <BabelLemma: godere>, <BabelLemma: accontentare>, <BabelLemma: prediligere>, <BabelLemma: provare_gioia>, <BabelLemma: amare>, <BabelLemma: soddisfare>, <BabelLemma: volere_bene>, <BabelLemma: deliziare>, <BabelLemma: piacere>, <BabelLemma: contentare>, <BabelLemma: piacere>, <BabelLemma: gratificare>, <BabelLemma: piacere>, <BabelLemma: piacere>, <BabelLemma: piacere>, <BabelLemma: appagare>, <BabelLemma: soddisfare>, <BabelLemma: gratificare>, <BabelLemma: piace>, <BabelLemma: appagare>, <BabelLemma: preferire>, <BabelLemma: contentare>, <BabelLemma: piacere>]
+        [<BabelLemma: soddisfare>, <BabelLemma: gratificare>, <BabelLemma: soddisfare>, <BabelLemma: compiacere>, <BabelLemma: appagare>, <BabelLemma: piacere>, <BabelLemma: deliziare>, <BabelLemma: assecondare>, <BabelLemma: prediligere>, <BabelLemma: provare_gioia>, <BabelLemma: appagare>, <BabelLemma: volere_bene>, <BabelLemma: piacere>, <BabelLemma: accontentare>, <BabelLemma: piacere>, <BabelLemma: contentare>, <BabelLemma: accontentare>, <BabelLemma: piace>, <BabelLemma: preferire>, <BabelLemma: contentare>, <BabelLemma: piacere>, <BabelLemma: piacere>, <BabelLemma: amare>, <BabelLemma: gratificare>, <BabelLemma: piacere>, <BabelLemma: piacere>, <BabelLemma: dilettare>, <BabelLemma: godere>, <BabelLemma: piace>, <BabelLemma: piacere>]
+
     la
         [<BabelSynset: WIKI:EN:La_(genus)>, <BabelSynset: WIKIDATA:NL:La>, <BabelSynset: WIKIDATA:EN:alif>, <BabelSynset: WIKI:EN:English_articles>, <BabelSynset: WIKI:EN:La_(Tarzan)>, <BabelSynset: la#n#3>, <BabelSynset: lanthanum#n#1>]
-        [<BabelLemma: lantanio>, <BabelLemma: numero_atomico_57>, <BabelLemma: i>, <BabelLemma: La>, <BabelLemma: lo>, <BabelLemma: ا>, <BabelLemma: ʼalif_madda>, <BabelLemma: Lanthanio>, <BabelLemma: ʼalif_makṣūra>, <BabelLemma: ʾalif>, <BabelLemma: La>, <BabelLemma: La>, <BabelLemma: la>, <BabelLemma: Lām-alif>, <BabelLemma: le>, <BabelLemma: il>, <BabelLemma: gl'>, <BabelLemma: La>, <BabelLemma: l'>, <BabelLemma: Alif>, <BabelLemma: lah>, <BabelLemma: Alif_wasla>, <BabelLemma: Lām_ʼalif>, <BabelLemma: La>, <BabelLemma: لا>, <BabelLemma: articoli_inglesi>, <BabelLemma: gli>, <BabelLemma: la>]
+        [<BabelLemma: lo>, <BabelLemma: numero_atomico_57>, <BabelLemma: ʼalif_makṣūra>, <BabelLemma: La>, <BabelLemma: لا>, <BabelLemma: l'>, <BabelLemma: La>, <BabelLemma: La>, <BabelLemma: le>, <BabelLemma: ا>, <BabelLemma: Alif>, <BabelLemma: i>, <BabelLemma: articoli_inglesi>, <BabelLemma: Lām_ʼalif>, <BabelLemma: gli>, <BabelLemma: lantanio>, <BabelLemma: la>, <BabelLemma: ʾalif>, <BabelLemma: la>, <BabelLemma: Lām-alif>, <BabelLemma: il>, <BabelLemma: Alif_wasla>, <BabelLemma: gl'>, <BabelLemma: lah>, <BabelLemma: La>, <BabelLemma: La>, <BabelLemma: ʼalif_madda>, <BabelLemma: Lanthanio>]
+
     pizza
         [<BabelSynset: WIKIDATA:EN:Pizza>, <BabelSynset: bore#n#1>, <BabelSynset: reel#n#1>, <BabelSynset: pizza#n#1>, <BabelSynset: reel#n#1>, <BabelSynset: WIKIDATA:EN:Pizza>, <BabelSynset: pizza#n#1>, <BabelSynset: bore#n#1>]
-        [<BabelLemma: DJ_Pizza>, <BabelLemma: Pizza_tonda>, <BabelLemma: Pizza_al_taglio>, <BabelLemma: noioso>, <BabelLemma: noia>, <BabelLemma: Pizza_in_teglia>, <BabelLemma: pittima>, <BabelLemma: pizza_surgelata>, <BabelLemma: bobina>, <BabelLemma: pizza>, <BabelLemma: pizze>, <BabelLemma: Dj_Pizza>, <BabelLemma: pizza>, <BabelLemma: Pizza>, <BabelLemma: pizza>, <BabelLemma: Pizza_a_taglio>, <BabelLemma: pasta_della_pizza>, <BabelLemma: forno_per_la_pizza>, <BabelLemma: mattone>, <BabelLemma: Dj_Pizza>, <BabelLemma: mattone>, <BabelLemma: impiastro>, <BabelLemma: lagna>, <BabelLemma: DJ_Pizza>, <BabelLemma: forno_da_pizza>, <BabelLemma: Pizza_a_taglio>, <BabelLemma: pizza_congelata>, <BabelLemma: Pizza_classica>, <BabelLemma: pasta_della_pizza>, <BabelLemma: pizze>, <BabelLemma: pizza_pie>, <BabelLemma: pizza_congelata>, <BabelLemma: forno_per_la_pizza>, <BabelLemma: cataplasma>, <BabelLemma: Pizza_alla_pala>, <BabelLemma: Pizza_tonda>, <BabelLemma: noia>, <BabelLemma: bobina>, <BabelLemma: pizza>, <BabelLemma: lagna>, <BabelLemma: pasta_per_pizza>, <BabelLemma: pasta_per_pizza>, <BabelLemma: pizza>, <BabelLemma: pizza>, <BabelLemma: pittima>, <BabelLemma: pizza_surgelata>, <BabelLemma: cataplasma>, <BabelLemma: impiastro>, <BabelLemma: Pizza_alla_pala>, <BabelLemma: Pizza_in_teglia>, <BabelLemma: Pizza_classica>, <BabelLemma: noioso>, <BabelLemma: pizza_pie>, <BabelLemma: palla>, <BabelLemma: forno_da_pizza>, <BabelLemma: Pizza_al_taglio>, <BabelLemma: palla>, <BabelLemma: Pizza>]
+        [<BabelLemma: lagna>, <BabelLemma: Pizza>, <BabelLemma: pasta_della_pizza>, <BabelLemma: Pizza_classica>, <BabelLemma: Pizza_alla_pala>, <BabelLemma: Pizza_in_teglia>, <BabelLemma: pasta_per_pizza>, <BabelLemma: pizza>, <BabelLemma: pizza_pie>, <BabelLemma: noia>, <BabelLemma: pittima>, <BabelLemma: Pizza_al_taglio>, <BabelLemma: Dj_Pizza>, <BabelLemma: Pizza_al_taglio>, <BabelLemma: mattone>, <BabelLemma: Pizza_classica>, <BabelLemma: palla>, <BabelLemma: pizza>, <BabelLemma: impiastro>, <BabelLemma: pizza_surgelata>, <BabelLemma: cataplasma>, <BabelLemma: DJ_Pizza>, <BabelLemma: pizze>, <BabelLemma: lagna>, <BabelLemma: pizza_congelata>, <BabelLemma: bobina>, <BabelLemma: cataplasma>, <BabelLemma: bobina>, <BabelLemma: pizza_surgelata>, <BabelLemma: pasta_della_pizza>, <BabelLemma: Pizza_a_taglio>, <BabelLemma: pizze>, <BabelLemma: Pizza>, <BabelLemma: forno_per_la_pizza>, <BabelLemma: Pizza_tonda>, <BabelLemma: pasta_per_pizza>, <BabelLemma: pizza>, <BabelLemma: pizza>, <BabelLemma: noioso>, <BabelLemma: noioso>, <BabelLemma: pizza>, <BabelLemma: pizza_pie>, <BabelLemma: Pizza_in_teglia>, <BabelLemma: DJ_Pizza>, <BabelLemma: pizza>, <BabelLemma: Pizza_a_taglio>, <BabelLemma: Pizza_tonda>, <BabelLemma: Pizza_alla_pala>, <BabelLemma: pizza_congelata>, <BabelLemma: Dj_Pizza>, <BabelLemma: noia>, <BabelLemma: impiastro>, <BabelLemma: pittima>, <BabelLemma: forno_per_la_pizza>, <BabelLemma: palla>, <BabelLemma: forno_da_pizza>, <BabelLemma: forno_da_pizza>, <BabelLemma: mattone>]
 
 ## TODO
 - add tests

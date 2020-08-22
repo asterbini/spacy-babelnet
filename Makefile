@@ -14,6 +14,12 @@ BN_DIR=BabelNet-API-4.0.1
 
 #######################################################################
 
+all:
+	@echo "make get_api		# get and unzip the BabelNet API"
+	@echo "make babelnet		# build and install the babelnet module with JCC 3.8"
+	@echo "    NOTICE jcc version must be > 3.7"
+	@echo "make spacy-babelnet	# build and install the spacy_babelnet module"
+
 # download and unzip the API
 get_api:
 	wget $(BN_API_URL)
@@ -34,8 +40,6 @@ CPLUS_INCLUDE_PATH:=$(JNI_DIR)/include:$(JNI_DIR)/include/linux
 
 JARS=  --jar babelnet-api-4.0.1.jar
 JARS+= --jar lib/babelscape-data-commons-1.0.jar
-
-CP=config:lib:lib/commons-beanutils-1.7.0.jar:lib/commons-beanutils-core-1.7.0.jar:lib/commons-codec-1.8.jar:lib/commons-collections-3.2.jar:lib/commons-configuration-1.5.jar:lib/commons-digester-1.8.jar:lib/commons-lang-2.3.jar:lib/commons-logging-1.1.jar:lib/gson-2.8.2.jar:lib/guava-23.0.jar:lib/httpclient-4.3.6.jar:lib/httpcore-4.3.3.jar:lib/icu4j-56.1.jar:lib/jwi-2.2.3.jar:lib/lcl-jlt-2.4.jar:lib/logback-classic-1.2.3.jar:lib/logback-core-1.2.3.jar:lib/lucene-analyzers-common-7.2.0.jar:lib/lucene-core-7.2.0.jar:lib/lucene-queries-7.2.0.jar:lib/lucene-queryparser-7.2.0.jar:lib/lucene-sandbox-7.2.0.jar:lib/slf4j-api-1.7.25.jar
 
 INCLUDE+=--include lib/commons-beanutils-1.7.0.jar
 INCLUDE+=--include lib/commons-beanutils-core-1.7.0.jar
@@ -61,12 +65,27 @@ INCLUDE+=--include lib/lucene-queryparser-7.2.0.jar
 INCLUDE+=--include lib/lucene-sandbox-7.2.0.jar
 INCLUDE+=--include lib/slf4j-api-1.7.25.jar
 
-MAPPING+=--mapping it/uniroma1/lcl/babelnet/BabelNetQuery/Builder 'from:(Lit/uniroma1/lcl/babelnet/Language;)Lit/uniroma1/lcl/babelnet/BabelNetQuery/Builder;'
-MAPPING+=--mapping it/uniroma1/lcl/babelnet/BabelNet 'getSynsets:(Lit/uniroma1/lcl/babelnet/BabelNetQuery;)Ljava/lang/List<it/uniroma1/lcl/babelnet/BabelSynset>;'
+PACKAGES+=--package it.uniroma1.lcl.babelnet
+PACKAGES+=--package it.uniroma1.lcl.jlt.util
+PACKAGES+=--package it.uniroma1.lcl.jlt
+PACKAGES+=--package com.babelscape
+PACKAGES+=--package com.babelscape.pipeline.annotation.maps
+PACKAGES+=--package com.babelscape.pipeline.annotation
+PACKAGES+=--package com.babelscape.pipeline
+PACKAGES+=--package java.util
 
-JCC:=python -m jcc
+JCC:=CPLUS_INCLUDE_PATH=$(CPLUS_INCLUDE_PATH) python -m jcc
+
+OPTS=
+OPTS+=--python babelnet
+OPTS+=--build
+OPTS+=--install
+OPTS+=--version 4.0.1-2
+OPTS+=--debug
+OPTS+=--shared
+OPTS+=--wheel
 
 build_install_api:
-	CPLUS_INCLUDE_PATH=$(CPLUS_INCLUDE_PATH) $(JCC) $(INCLUDE) $(JARS) $(MAPPING) --python babelnet --build --install --version 4.0.1
+	$(JCC) $(INCLUDE) $(JARS) $(PACKAGES) $(LIBPATH) $(OPTS)
 
 #######################################################################
