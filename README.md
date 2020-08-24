@@ -8,10 +8,10 @@ Only tokens that map to these 4 types are searched in BabelNet.
 
 ### Build and install the `babelnet` module
 The `babelnet` module is a python wrapper to the Babelnet API jars
-- install the `jcc` module (version > 3.7 or from a recent SVN development) \
-  ``anaconda install jcc>3.7``
+- install the `jcc` module \
+  ``anaconda install jcc
 - or else \
-  ``pip install jcc>3.7``
+  ``pip install jcc
 - download and unzip the Babelnet-API archive version 4.0.1 \
   ``make get_api``
 - build and install the `babelnet` module \

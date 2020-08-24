@@ -67,11 +67,6 @@ INCLUDE+=--include lib/slf4j-api-1.7.25.jar
 
 PACKAGES+=--package it.uniroma1.lcl.babelnet
 PACKAGES+=--package it.uniroma1.lcl.jlt.util
-PACKAGES+=--package it.uniroma1.lcl.jlt
-PACKAGES+=--package com.babelscape
-PACKAGES+=--package com.babelscape.pipeline.annotation.maps
-PACKAGES+=--package com.babelscape.pipeline.annotation
-PACKAGES+=--package com.babelscape.pipeline
 PACKAGES+=--package java.util
 
 JCC:=CPLUS_INCLUDE_PATH=$(CPLUS_INCLUDE_PATH) python -m jcc
@@ -83,7 +78,7 @@ OPTS+=--install
 OPTS+=--version 4.0.1-2
 OPTS+=--debug
 OPTS+=--shared
-OPTS+=--wheel
+#OPTS+=--wheel
 
 build_install_api:
 	$(JCC) $(INCLUDE) $(JARS) $(PACKAGES) $(LIBPATH) $(OPTS)
