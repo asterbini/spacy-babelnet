@@ -17,7 +17,6 @@ BN_DIR=BabelNet-API-4.0.1
 all:
 	@echo "make get_api		# get and unzip the BabelNet API"
 	@echo "make babelnet		# build and install the babelnet module with JCC 3.8"
-	@echo "    NOTICE jcc version must be > 3.7"
 	@echo "make spacy-babelnet	# build and install the spacy_babelnet module"
 
 # download and unzip the API
