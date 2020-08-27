@@ -9,20 +9,20 @@ Only tokens that map to these 4 types are searched in BabelNet.
 ### Build and install the `babelnet` module
 The `babelnet` module is a python wrapper to the Babelnet API jars
 - install the `jcc` and `openjdk` packages \
-  ``anaconda install jcc openjdk
+  `anaconda install jcc openjdk`
 - or else \
-  ``pip install jcc
-    install openjdk for your Linux distribution
-- edit the Makefile and set JNI_DIR to the directory containing `include/jni.h`
+  `pip install jcc` \
+    and install `openjdk` for your Linux distribution
+- edit `Makefile` and set `JNI_DIR` to the directory containing `include/jni.h`
 - download and unzip the Babelnet-API archive version 4.0.1 \
-  ``make get_api``
+  `make get_api`
 - build and install the `babelnet` module \
-  ``make babelnet``
+  `make babelnet`
 
 ### Build and install the `spacy_babelnet` module
-- ``make spacy-babelnet`` \
+- `make spacy-babelnet` \
   or else
-- ``python setup.py install``
+- `python setup.py install`
 
 ### Copy the config directory containing your key
 The `babelnet` module must find the `config` directory in the current directory. Copy the `config` directory and edit the `config/babelnet.var.properties` to add your BabelNet API key.
