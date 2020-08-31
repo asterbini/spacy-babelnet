@@ -6,6 +6,9 @@ import babelnet as bn
 
 bn.initVM()
 
+DEBUG=True
+DEBUG=False
+
 class BabelnetAnnotator():
     __FIELD = 'babelnet'
 
@@ -22,9 +25,9 @@ class BabelnetAnnotator():
         for token in doc:
             babelnet = Babelnet(token=token, lang=self.__bn_lang, source=self.__bn_source)
             token._.set(BabelnetAnnotator.__FIELD, babelnet)
-
+            if DEBUG:
+                print(token, babelnet)
         return doc
-
 
 class Babelnet():
     # keep __bn if it's needed, even if it's deprecated
@@ -65,16 +68,23 @@ class Babelnet():
         self.__token    = token
         self.__bn_lang  = lang
         self.__bn_source= source
-        self.__synsets  = self.__find_synsets(token)
-        self.__lemmas   = self.__find_lemmas()
+        self.__synsets  = self.__find_synsets(token)    # we store only the IDs
+        self.__lemmas   = None                          # computed only on demand
 
     def synsets(self):
+        # retrive the BabelnetSynset from their IDs
+        return [ self.__bn.getSynset(bn.BabelSynsetID(s)) for s in self.__synsets ]
+
+    def synset_IDs(self):
         return self.__synsets
 
     def lemmas(self):
+        if self.__lemmas is None:
+            self.__lemmas = self.__find_lemmas()
         return self.__lemmas
 
     def __find_synsets(self, token: Token):
+        '''Retrieves the IDs of the token synsets. POS and source are used to restrict the search.'''
         word_variants = [token.text]
         if token.pos in [VERB, NOUN, ADJ]:
             # extend synset coverage using lemmas
@@ -83,7 +93,7 @@ class Babelnet():
         token_synsets = set()
         pos = self.spacy2babelnet_pos(token.pos)
         for word in word_variants:
-            if pos!=None:
+            if pos is not None:
                 # we use LKBQuery to be able to select the main SenseSource
                 qb = bn.BabelNetQuery.Builder(word)
                 qb.POS(pos)
@@ -92,10 +102,13 @@ class Babelnet():
                     qb.source(self.__bn_source)
                 q = qb.build()
                 q = bn.LKBQuery.cast_(q)
-                token_synsets |= set(bn.BabelSynset.cast_(s) for s in self.__lkb.getSynsets(q))
+                token_synsets |= set(bn.BabelSynset.cast_(s).getID().toString() for s in self.__lkb.getSynsets(q))
         if token_synsets:
-            return list(token_synsets)
+            return list(token_synsets)  # sorted?
         return []
 
     def __find_lemmas(self):
-        return list({lemma for synset in self.__synsets for lemma in synset.getLemmas(self.__bn_lang)})
+        return list({lemma for synset in self.synsets() for lemma in synset.getLemmas(self.__bn_lang)})
+
+    def __str__(self):
+        return f"Babelnet({self.__token}, {self.__token.pos_}, {self.__synsets})"
