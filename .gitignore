@@ -5,3 +5,5 @@ dist/
 spacy_babelnet.egg-info/
 __pycache__/
 BabelNet-API-4.0.1*
+BabelNet-API-5.0*
+NLP*

@@ -2,15 +2,16 @@
 #### Fit this variable as for your setup ####
 
 ## Directory containing the JDK installation with include/jni.h and include/linux/jni_md.h
-JNI_DIR:=/opt/anaconda3/envs/MLC
+JNI_DIR:=/opt/anaconda3/envs/babelnet
 #JNI_DIR:=/usr/lib/jvm/java
 
 #######################################################################
 
 # BabelNet-API-4.0.1 file
-BN_API_URL:=https://babelnet.org/data/4.0/BabelNet-API-4.0.1.zip
+#BN_API_URL:=https://babelnet.org/data/4.0/BabelNet-API-4.0.1.zip
+BN_API_URL:=https://babelnet.org/data/BabelNet-API-5.0.zip
 # BabelNet API directory once unzipped
-BN_DIR=BabelNet-API-4.0.1
+BN_DIR=BabelNet-API-5.0
 
 #######################################################################
 
@@ -38,8 +39,8 @@ spacy-babelnet:
 
 CPLUS_INCLUDE_PATH:=$(JNI_DIR)/include:$(JNI_DIR)/include/linux
 
-JARS+=babelnet-api-4.0.1.jar
-JARS+=lib/babelscape-data-commons-1.0.jar
+JARS+=babelnet-api-5.0.jar
+#JARS+=lib/babelscape-data-commons-1.0.jar
 
 INCLUDE+=commons-beanutils-1.7.0.jar
 INCLUDE+=commons-beanutils-core-1.7.0.jar
@@ -55,7 +56,7 @@ INCLUDE+=httpclient-4.3.6.jar
 INCLUDE+=httpcore-4.3.3.jar
 INCLUDE+=icu4j-56.1.jar
 INCLUDE+=jwi-2.2.3.jar
-INCLUDE+=lcl-jlt-2.4.jar
+INCLUDE+=lcl-jlt-2.6.3.jar
 INCLUDE+=logback-classic-1.2.3.jar
 INCLUDE+=logback-core-1.2.3.jar
 INCLUDE+=lucene-analyzers-common-7.2.0.jar
@@ -65,10 +66,10 @@ INCLUDE+=lucene-queryparser-7.2.0.jar
 INCLUDE+=lucene-sandbox-7.2.0.jar
 INCLUDE+=slf4j-api-1.7.25.jar
 
-PACKAGES+=com.babelscape.util
-PACKAGES+=com.babelscape.pipeline.annotation.maps
-PACKAGES+=com.babelscape.babelmorph
-PACKAGES+=com.babelscape.util.tags
+#PACKAGES+=com.babelscape.util
+#PACKAGES+=com.babelscape.pipeline.annotation.maps
+#PACKAGES+=com.babelscape.babelmorph
+#PACKAGES+=com.babelscape.util.tags
 PACKAGES+=it.uniroma1.lcl.babelnet.data
 PACKAGES+=it.uniroma1.lcl.babelnet.impl
 PACKAGES+=it.uniroma1.lcl.babelnet.iterators
@@ -89,10 +90,12 @@ JCC:=CPLUS_INCLUDE_PATH=$(CPLUS_INCLUDE_PATH) python -m jcc
 
 OPTS=
 OPTS+=--python babelnet
-OPTS+=--version 4.0.1-2
+OPTS+=--version 5.0
 OPTS+=--debug
 OPTS+=--shared
-#OPTS+=--wheel
+OPTS+=--wheel
+
+OPTS+=--rename java.util.Locale=java.util.Locale_
 
 compile:
 	$(JCC) \

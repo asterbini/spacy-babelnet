@@ -1,6 +1,7 @@
 from spacy.tokens.doc      import Doc
 from spacy.tokens.token    import Token
 from spacy.parts_of_speech import *
+from spacy.language        import Language
 
 import babelnet as bn
 
@@ -9,13 +10,14 @@ bn.initVM()
 DEBUG=True
 DEBUG=False
 
+@Language.factory("babelnet")
 class BabelnetAnnotator():
     __FIELD = 'babelnet'
 
-    def __init__(self, lang: str = 'en', source=None):
+    def __init__(self, nlp, name, source=None):
         Token.set_extension(BabelnetAnnotator.__FIELD, default=None, force=True)
-        self.__lang      = lang
-        self.__bn_lang   = bn.Language.fromISO(lang)
+        self.__lang      = nlp.lang
+        self.__bn_lang   = bn.Language.fromISO(nlp.lang)
         self.__source    = source
         self.__bn_source = None
         if source:
