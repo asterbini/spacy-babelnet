@@ -14,7 +14,7 @@ The `babelnet` module is a python wrapper to the Babelnet API jars
   `pip install jcc` \
     and install `openjdk` for your Linux distribution
 - edit `Makefile` and set `JNI_DIR` to the directory containing `include/jni.h`
-- download and unzip the Babelnet-API archive version 4.0.1 \
+- download and unzip the Babelnet-API archive version 5.0 \
   `make get_api`
 - build and install the `babelnet` module \
   `make babelnet`
@@ -25,7 +25,8 @@ The `babelnet` module is a python wrapper to the Babelnet API jars
 - `python setup.py install`
 
 ### Copy the config directory containing your key
-The `babelnet` module must find the `config` directory in the current directory. Copy the `config` directory and edit the `config/babelnet.var.properties` to add your BabelNet API key.
+The `babelnet` module must find the `config` directory in the current directory. 
+Copy the `config` directory and edit the `config/babelnet.var.properties` to add your BabelNet API key.
 
 ### Optional: local install of the BabelNet indices (29G compressed, 49G on disk)
 - download the BabelNet indices from BabelNet.org
@@ -39,7 +40,7 @@ import spacy
 from spacy_babelnet import BabelnetAnnotator
 
 nlp = spacy.load('it')
-nlp.add_pipe(BabelnetAnnotator('it', source='OMWN_IT))    # the source argument is optional
+nlp.add_pipe('babelnet')    # TODO: example with source argument (optional)
 
 doc = nlp('Mi piace la pizza')    # I like pizza
 for token in doc:
@@ -72,6 +73,7 @@ That produces the output
 - add tests
 - find a better location for the `babelnet` configuration (``~/babelnet_data`` ?)
 - speed-up synsets retrieval
+    - cache queries
     - convert BN to a simpler/faster database?
     - build a lemma-synset external index?
 ## DONE
