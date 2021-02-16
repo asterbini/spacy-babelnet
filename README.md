@@ -73,10 +73,11 @@ That produces the output
 - add tests
 - find a better location for the `babelnet` configuration (``~/babelnet_data`` ?)
 - speed-up synsets retrieval
-    - cache queries
+    - test cache
     - convert BN to a simpler/faster database?
     - build a lemma-synset external index?
 ## DONE
+- added initial (word,pos) caching shared at class level
 - mapped other spacy POS types to Babelnet POS types
 - filter out tokens with unmapped POS
 - moved to faster LKB queries

@@ -2,13 +2,14 @@ from spacy.tokens.doc      import Doc
 from spacy.tokens.token    import Token
 from spacy.parts_of_speech import *
 from spacy.language        import Language
+from functools import lru_cache
 
 import babelnet as bn
 
 bn.initVM()
 
-DEBUG=True
 DEBUG=False
+DEBUG=True
 
 @Language.factory("babelnet")
 class BabelnetAnnotator():
@@ -85,6 +86,25 @@ class Babelnet():
             self.__lemmas = self.__find_lemmas()
         return self.__lemmas
 
+    cached_synsets = {}
+    def __empty_cache(self):
+        self.cached_synsets = {}
+    def __word_synsets(self, word, pos):
+        if (word,pos) not in self.cached_synsets:
+            # we use LKBQuery to be able to select the main SenseSource
+            qb = bn.BabelNetQuery.Builder(word)
+            qb.POS(pos)
+            getattr(qb, 'from')(self.__bn_lang)  # from is a reserved word
+            if self.__bn_source:
+                qb.source(self.__bn_source)
+            q = qb.build()
+            q = bn.LKBQuery.cast_(q)
+            self.cached_synsets[word, pos] = set(bn.BabelSynset.cast_(s).getID().toString()
+                                                 for s in self.__lkb.getSynsets(q))
+            if DEBUG:
+                print(word, pos, self.cached_synsets[word, pos])
+        return self.cached_synsets[word, pos]
+
     def __find_synsets(self, token: Token):
         '''Retrieves the IDs of the token synsets. POS and source are used to restrict the search.'''
         word_variants = [token.text]
@@ -96,15 +116,7 @@ class Babelnet():
         pos = self.spacy2babelnet_pos(token.pos)
         for word in word_variants:
             if pos is not None:
-                # we use LKBQuery to be able to select the main SenseSource
-                qb = bn.BabelNetQuery.Builder(word)
-                qb.POS(pos)
-                getattr(qb,'from')(self.__bn_lang)  # from is a reserved word
-                if self.__bn_source:
-                    qb.source(self.__bn_source)
-                q = qb.build()
-                q = bn.LKBQuery.cast_(q)
-                token_synsets |= set(bn.BabelSynset.cast_(s).getID().toString() for s in self.__lkb.getSynsets(q))
+                token_synsets |= self.__word_synsets(word, pos)
         if token_synsets:
             return list(token_synsets)  # sorted?
         return []
