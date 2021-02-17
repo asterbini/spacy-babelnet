@@ -2,14 +2,14 @@ from spacy.tokens.doc      import Doc
 from spacy.tokens.token    import Token
 from spacy.parts_of_speech import *
 from spacy.language        import Language
-from functools import lru_cache
+import json
 
 import babelnet as bn
 
 bn.initVM()
 
-DEBUG=False
 DEBUG=True
+DEBUG=False
 
 @Language.factory("babelnet")
 class BabelnetAnnotator():
@@ -64,8 +64,12 @@ class Babelnet():
     #       X     :
             }
 
-    def spacy2babelnet_pos(self, pos):
-        return self.__SPACY_BN_POS_MAPPING.get(pos)
+    @classmethod
+    def spacy2babelnet_pos(cls, pos):
+        return cls.__SPACY_BN_POS_MAPPING.get(pos)
+    @classmethod
+    def pos2babelnet_pos(cls, pos):
+        return cls.__SPACY_BN_POS_MAPPING.get(IDS[pos])
 
     def __init__(self, token: Token, lang: bn.Language = bn.Language.EN, source=None):
         self.__token    = token
@@ -86,10 +90,27 @@ class Babelnet():
             self.__lemmas = self.__find_lemmas()
         return self.__lemmas
 
+    # we cache the synsets for a (word, pos) pair at class level
     cached_synsets = {}
-    def __empty_cache(self):
-        self.cached_synsets = {}
+    @classmethod
+    def dump_json(cls, filename):
+        '''Dump the cached synsets to json file'''
+        with open(filename, mode='w') as F:
+            diz = { "|".join([w,p.toString()]) : list(v)
+                    for (w,p),v in  cls.cached_synsets.items()}
+            return json.dump(diz, F)
+    @classmethod
+    def load_json(cls, filename):
+        '''reload the synsets cache from json file'''
+        def rebuild_key(k):
+            w,p = k.split('|')
+            return w, cls.pos2babelnet_pos(p)
+        with open(filename, mode='r') as F:
+            diz = json.load(F)
+            cls.cached_synsets = { rebuild_key(k) : set(v) for k,v in diz.items() }
+
     def __word_synsets(self, word, pos):
+        '''retrieve the sysnsets for a given (word,pos)'''
         if (word,pos) not in self.cached_synsets:
             # we use LKBQuery to be able to select the main SenseSource
             qb = bn.BabelNetQuery.Builder(word)
@@ -114,8 +135,8 @@ class Babelnet():
 
         token_synsets = set()
         pos = self.spacy2babelnet_pos(token.pos)
-        for word in word_variants:
-            if pos is not None:
+        if pos is not None:
+            for word in word_variants:
                 token_synsets |= self.__word_synsets(word, pos)
         if token_synsets:
             return list(token_synsets)  # sorted?
