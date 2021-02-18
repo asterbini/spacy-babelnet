@@ -11,8 +11,7 @@ bn.initVM()
 DEBUG=True
 DEBUG=False
 
-@Language.factory("babelnet")
-class BabelnetAnnotator():
+class BabelnetAnnotator:
     __FIELD = 'babelnet'
 
     def __init__(self, nlp, name, source=None):
@@ -31,6 +30,14 @@ class BabelnetAnnotator():
             if DEBUG:
                 print(token, babelnet)
         return doc
+
+#to handle also spacy2
+try:
+    @Language.factory("babelnet")
+    def make_BA(nlp, name):
+        return BabelnetAnnotator(nlp, name)
+except:
+    pass
 
 class Babelnet():
     # keep __bn if it's needed, even if it's deprecated
