@@ -9,7 +9,7 @@ Only tokens that map to these 4 types are searched in BabelNet.
 ### Build and install the `babelnet` module
 The `babelnet` module is a python wrapper to the Babelnet API jars
 - install the `jcc` and `openjdk` packages \
-  `anaconda install jcc openjdk`
+  `conda install jcc openjdk`
 - or else \
   `pip install jcc` \
     and install `openjdk` for your Linux distribution
@@ -40,7 +40,11 @@ import spacy
 from spacy_babelnet import BabelnetAnnotator
 
 nlp = spacy.load('it')
-nlp.add_pipe('babelnet')    # TODO: example with source argument (optional)
+
+# with spacy 2
+nlp.add_pipe(BabelnetAnnotator(nlp,'babelnet'))    # TODO: example with source argument (optional)
+# with spacy 3
+nlp.add_pipe('babelnet')    			   # TODO: example with source argument (optional)
 
 doc = nlp('Mi piace la pizza')    # I like pizza
 for token in doc:
