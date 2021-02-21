@@ -14,18 +14,22 @@ DEBUG=False
 class BabelnetAnnotator:
     __FIELD = 'babelnet'
 
-    def __init__(self, nlp, name, source=None):
+    def __init__(self, nlp, name, source: str=None, domain: str=None):
         Token.set_extension(BabelnetAnnotator.__FIELD, default=None, force=True)
         self.__lang      = nlp.lang
         self.__bn_lang   = bn.Language.fromISO(nlp.lang)
         self.__source    = source
+        self.__domain    = domain
+        self.__bn_domain = None
+        if domain:
+            self.__bn_domain = bn.BabelDomain.valueOfName(domain)
         self.__bn_source = None
         if source:
             self.__bn_source = getattr(bn.BabelSenseSource,source)
 
     def __call__(self, doc: Doc):
         for token in doc:
-            babelnet = Babelnet(token=token, lang=self.__bn_lang, source=self.__bn_source)
+            babelnet = Babelnet(token=token, lang=self.__bn_lang, source=self.__bn_source, domain=self.__bn_domain)
             token._.set(BabelnetAnnotator.__FIELD, babelnet)
             if DEBUG:
                 print(token, babelnet)
@@ -33,9 +37,10 @@ class BabelnetAnnotator:
 
 #to handle also spacy2
 try:
-    @Language.factory("babelnet")
-    def make_BA(nlp, name):
-        return BabelnetAnnotator(nlp, name)
+    @Language.factory("babelnet", 
+            default_config={'source':None, 'domain':None})
+    def make_BA(nlp, name, source=None, domain=None):
+        return BabelnetAnnotator(nlp, name, source, domain)
 except:
     pass
 
@@ -78,10 +83,11 @@ class Babelnet():
     def pos2babelnet_pos(cls, pos):
         return cls.__SPACY_BN_POS_MAPPING.get(IDS[pos])
 
-    def __init__(self, token: Token, lang: bn.Language = bn.Language.EN, source=None):
+    def __init__(self, token: Token, lang: bn.Language = bn.Language.EN, source=None, domain=None):
         self.__token    = token
         self.__bn_lang  = lang
         self.__bn_source= source
+        self.__bn_domain= domain
         self.__synsets  = self.__find_synsets(token)    # we store only the IDs
         self.__lemmas   = None                          # computed only on demand
 
@@ -116,6 +122,17 @@ class Babelnet():
             diz = json.load(F)
             cls.cached_synsets = { rebuild_key(k) : set(v) for k,v in diz.items() }
 
+    # TODO: define serialization methods
+    def to_disk(self):
+        # save only:
+        # __synsets
+        # __token?
+        # __bn_source?
+        # __bn_lang as string
+        pass
+    def from_disk(self):
+        pass
+
     def __word_synsets(self, word, pos):
         '''retrieve the sysnsets for a given (word,pos)'''
         if (word,pos) not in self.cached_synsets:
@@ -125,6 +142,8 @@ class Babelnet():
             getattr(qb, 'from')(self.__bn_lang)  # from is a reserved word
             if self.__bn_source:
                 qb.source(self.__bn_source)
+            if self.__bn_domain:
+                qb.tag(self.__bn_domain)
             q = qb.build()
             q = bn.LKBQuery.cast_(q)
             self.cached_synsets[word, pos] = set(bn.BabelSynset.cast_(s).getID().toString()

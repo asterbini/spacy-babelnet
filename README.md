@@ -36,15 +36,16 @@ Copy the `config` directory and edit the `config/babelnet.var.properties` to add
 ## Usage Example
 The wrapper adds the 'babelnet' property to tokens, containing a Babelnet object that can be used to retrieve its synsets or lemmas
 ```
-import spacy
+import spacy, babelnet
 from spacy_babelnet import BabelnetAnnotator
 
-nlp = spacy.load('it')
+nlp = spacy.load('it_core_news_lg')	# spacy 3
 
-# with spacy 2
-nlp.add_pipe(BabelnetAnnotator(nlp,'babelnet'))    # TODO: example with source argument (optional)
 # with spacy 3
-nlp.add_pipe('babelnet')    			   # TODO: example with source argument (optional)
+nlp.add_pipe('babelnet', config={
+	#'domain': babelnet.BabelDomain.BUSINESS_INDUSTRY_AND_FINANCE.value,
+	'source': babelnet.BabelSenseSource.OMWN_IT.toString()
+	})
 
 doc = nlp('Mi piace la pizza')    # I like pizza
 for token in doc:
@@ -52,25 +53,23 @@ for token in doc:
 ```
 That produces the output
 
-    mi
+	Mi
         PRON
         []
         []
-
-    piace
+	piace
         VERB
-        [<BabelSynset: like#v#2>, <BabelSynset: like#v#2>, <BabelSynset: gratify#v#1>, <BabelSynset: delight#v#1>, <BabelSynset: care#v#3>, <BabelSynset: enjoy#v#3>, <BabelSynset: like#v#3>]
-        [<BabelLemma: piace>, <BabelLemma: piace>, <BabelLemma: piacere>, <BabelLemma: prediligere>, <BabelLemma: contentare>, <BabelLemma: piacere>, <BabelLemma: accontentare>, <BabelLemma: appagare>, <BabelLemma: piacere>, <BabelLemma: contentare>, <BabelLemma: piacere>, <BabelLemma: amare>, <BabelLemma: gratificare>, <BabelLemma: piacere>, <BabelLemma: accontentare>, <BabelLemma: provare_gioia>, <BabelLemma: appagare>, <BabelLemma: piacere>, <BabelLemma: gratificare>, <BabelLemma: soddisfare>, <BabelLemma: compiacere>, <BabelLemma: assecondare>, <BabelLemma: soddisfare>, <BabelLemma: godere>, <BabelLemma: preferire>, <BabelLemma: piacere>, <BabelLemma: dilettare>, <BabelLemma: deliziare>]
-
-    la
+        [<BabelSynset: bn:00090362v__like#v#2>, <BabelSynset: bn:00086519v__delight#v#1>, <BabelSynset: bn:00090363v__like#v#3>, <BabelSynset: bn:00087646v__enjoy#v#3>, <BabelSynset: bn:00084526v__wish#v#2>]
+        [<BabelLemma: piacere>, <BabelLemma: contentare>, <BabelLemma: provare_gioia>, <BabelLemma: piacere>, <BabelLemma: assecondare>, <BabelLemma: dilettare>, <BabelLemma: preferire>, <BabelLemma: compiacere>, <BabelLemma: piacere>, <BabelLemma: godere>, <BabelLemma: accontentare>, <BabelLemma: appagare>, <BabelLemma: piace>, <BabelLemma: deliziare>, <BabelLemma: gratificare>, <BabelLemma: piacere>, <BabelLemma: prediligere>, <BabelLemma: piacere>, <BabelLemma: amare>, <BabelLemma: soddisfare>]
+	la
         DET
         []
         []
-
-    pizza
+	pizza
         NOUN
-        [<BabelSynset: bore#n#1>, <BabelSynset: pizza#n#1>, <BabelSynset: reel#n#1>, <BabelSynset: reel#n#1>, <BabelSynset: pizza#n#1>, <BabelSynset: bore#n#1>]
-        [<BabelLemma: forno_per_la_pizza>, <BabelLemma: cataplasma>, <BabelLemma: Pizza_tonda>, <BabelLemma: impiastro>, <BabelLemma: cataplasma>, <BabelLemma: pizza_pie>, <BabelLemma: noia>, <BabelLemma: Pizza_tonda>, <BabelLemma: pizza>, <BabelLemma: pizza_congelata>, <BabelLemma: noioso>, <BabelLemma: palla>, <BabelLemma: pizza>, <BabelLemma: bobina>, <BabelLemma: pizza>, <BabelLemma: lagna>, <BabelLemma: pizza>, <BabelLemma: noia>, <BabelLemma: pizza_congelata>, <BabelLemma: Pizza_a_taglio>, <BabelLemma: Pizza_alla_pala>, <BabelLemma: pizza>, <BabelLemma: Pizza_al_taglio>, <BabelLemma: palla>, <BabelLemma: Pizza_a_taglio>, <BabelLemma: mattone>, <BabelLemma: Pizza_classica>, <BabelLemma: Pizza_in_teglia>, <BabelLemma: pittima>, <BabelLemma: pasta_della_pizza>, <BabelLemma: forno_da_pizza>, <BabelLemma: pittima>, <BabelLemma: lagna>, <BabelLemma: pizze>, <BabelLemma: Pizza_al_taglio>, <BabelLemma: pasta_della_pizza>, <BabelLemma: pizza>, <BabelLemma: noioso>, <BabelLemma: forno_da_pizza>, <BabelLemma: Pizza_in_teglia>, <BabelLemma: pizza_surgelata>, <BabelLemma: forno_per_la_pizza>, <BabelLemma: Pizza_classica>, <BabelLemma: pasta_per_pizza>, <BabelLemma: pizze>, <BabelLemma: bobina>, <BabelLemma: pasta_per_pizza>, <BabelLemma: mattone>, <BabelLemma: Pizza_alla_pala>, <BabelLemma: pizza_pie>, <BabelLemma: impiastro>, <BabelLemma: pizza_surgelata>]
+        [<BabelSynset: bn:00062694n__pizza#n#1>, <BabelSynset: bn:00066766n__reel#n#1>, <BabelSynset: bn:00012225n__bore#n#1>]
+        [<BabelLemma: pizza_al_taglio>, <BabelLemma: mattone>, <BabelLemma: pizzetta>, <BabelLemma: pizza_surgelata>, <BabelLemma: impiastro>, <BabelLemma: pizza_a_taglio>, <BabelLemma: pizza_congelata>, <BabelLemma: pizza_pie>, <BabelLemma: pizze>, <BabelLemma: palla>, <BabelLemma: pasta_della_pizza>, <BabelLemma: bobina>, <BabelLemma: pizza>, <BabelLemma: noioso>, <BabelLemma: pizza>, <BabelLemma: pizza>, <BabelLemma: pizza_classica>, <BabelLemma: noia>, <BabelLemma: forno_da_pizza>, <BabelLemma: lagna>, <BabelLemma: pasta_per_pizza>, <BabelLemma: cataplasma>, <BabelLemma: pizza_tonda>, <BabelLemma: pizzette>, <BabelLemma: pizza_in_teglia>, <BabelLemma: pittima>, <BabelLemma: forno_per_la_pizza>, <BabelLemma: pizza_alla_pala>]
+
 
 
 ## TODO
@@ -80,6 +79,7 @@ That produces the output
     - convert BN to a simpler/faster database?
     - build a lemma-synset external index?
 ## DONE
+- added domain and source parameters
 - added (word,pos) caching of synsets shared at class level, with json save/load
 - mapped other spacy POS types to Babelnet POS types
 - filter out tokens with unmapped POS
